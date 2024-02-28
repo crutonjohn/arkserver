@@ -62,8 +62,8 @@ echo "Cleaning up any leftover arkmanager files..."
 if [ ! -d $ARKSERVER/ShooterGame/Binaries ]; then
 	echo "No game files found. Preparing for install..."
 	mkdir -p $ARKSERVER/ShooterGame
-  mkdir -p $ARKSERVER/ShooterGame/Saved/Config/LinuxServer
-  mkdir -p $ARKSERVER/ShooterGame/Saved/$am_ark_AltSaveDirectoryName
+        mkdir -p $ARKSERVER/ShooterGame/Saved/Config/LinuxServer
+        mkdir -p $ARKSERVER/ShooterGame/Saved/$am_ark_AltSaveDirectoryName
 	mkdir -p $ARKSERVER/ShooterGame/Content/Mods
 	mkdir -p $ARKSERVER/ShooterGame/Binaries/Linux/
 fi
@@ -71,14 +71,14 @@ fi
 
 echo "Creating arkmanager.cfg from environment variables..."
 echo -e "# Ark Server Tools - arkmanager config\n# Generated from container environment variables\n\n" > /ark/config/arkmanager.cfg
-if [ -f /ark/config/arkmanager_base.cfg ]; then
-	cat /ark/config/arkmanager_base.cfg >> /ark/config/arkmanager.cfg
+if [ -f /ark/staging/arkmanager.cfg ]; then
+	cat /ark/staging/arkmanager.cfg >> /ark/config/arkmanager.cfg
 fi
 
 echo -e "\n\narkserverroot=\"$ARKSERVER\"\n" >> /ark/config/arkmanager.cfg
 printenv | sed -n -r 's/am_(.*)=(.*)/\1=\"\2\"/ip' >> /ark/config/arkmanager.cfg
 
-if [ ! -f /ark/config/crontab ]; then
+if [ ! -f /ark/staging/crontab ]; then
 	echo "Creating crontab..."
 	cat << EOF >> /ark/config/crontab
 # Example of job definition:
@@ -100,6 +100,11 @@ if [ ! -f /ark/config/crontab ]; then
 15 10 * * * arkmanager restart --warn --saveworld
 
 EOF
+
+elif [ -f /ark/staging/crontab ]; then
+	echo "Creating crontab from existing configmap..."
+	cat /ark/staging/crontab > /ark/config/crontab
+
 fi
 
 # If there is uncommented line in the file
@@ -114,6 +119,12 @@ if [ $CRONNUMBER -gt 0 ]; then
 else
 	echo "No crontab set."
 fi
+
+# create symlinks from configmaps
+[ -f /ark/staging/AllowedCheaterSteamIDs.txt ] && ln -sf /ark/staging/AllowedCheaterSteamIDs.txt /ark/config/AllowedCheaterSteamIDs.txt
+[ -f /ark/staging/Engine.ini ] && ln -sf /ark/staging/Engine.ini /ark/config/Engine.ini
+[ -f /ark/staging/Game.ini ] && ln -sf /ark/staging/Game.ini /ark/config/Game.ini
+[ -f /ark/staging/GameUserSettings.ini ] && ln -sf /ark/staging/GameUserSettings.ini /ark/config/GameUserSettings.ini
 
 # Create symlinks for configs
 [ -f /ark/config/AllowedCheaterSteamIDs.txt ] && ln -sf /ark/config/AllowedCheaterSteamIDs.txt $ARKSERVER/ShooterGame/Saved/AllowedCheaterSteamIDs.txt
