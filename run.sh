@@ -209,6 +209,7 @@ if [ "$am_arkAutoUpdateOnStart" != "true" ]; then
   fi
 fi
 
+arkmanager restore
 arkmanager start --no-background --verbose &
 arkmanpid=$!
 wait $arkmanpid
