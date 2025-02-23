@@ -159,6 +159,13 @@ else
 	echo "Backup on start is not enabled."
 fi
 
+if [ "$RESTORE_ONSTART" = "true" ]; then
+	echo "Restoring up on start..."
+	arkmanager restore
+else
+	echo "Backup on start is not enabled."
+fi
+
 function stop {
 	arkmanager broadcast "Server is shutting down"
 	arkmanager notify "Server is shutting down"
@@ -209,7 +216,6 @@ if [ "$am_arkAutoUpdateOnStart" != "true" ]; then
   fi
 fi
 
-arkmanager restore
 arkmanager start --no-background --verbose &
 arkmanpid=$!
 wait $arkmanpid
