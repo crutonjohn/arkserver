@@ -33,10 +33,10 @@ ARG AMG_BUILD
 FROM arkmanager-$AMG_BUILD
 RUN ln -s /usr/local/bin/arkmanager /usr/bin/arkmanager
 
-COPY arkmanager/arkmanager.cfg /etc/arkmanager/arkmanager.cfg
-COPY arkmanager/instance.cfg /etc/arkmanager/instances/main.cfg
-COPY run.sh /home/steam/run.sh
-COPY log.sh /home/steam/log.sh
+#COPY arkmanager/arkmanager.cfg /etc/arkmanager/arkmanager.cfg
+#COPY arkmanager/instance.cfg /etc/arkmanager/instances/main.cfg
+#COPY run.sh /home/steam/run.sh
+#COPY log.sh /home/steam/log.sh
 
 RUN echo "%sudo   ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers \
     && usermod -a -G sudo steam \
@@ -45,6 +45,11 @@ RUN echo "%sudo   ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers \
 
 WORKDIR /home/steam
 USER steam
+
+COPY arkmanager/arkmanager.cfg /etc/arkmanager/arkmanager.cfg
+COPY arkmanager/instance.cfg /etc/arkmanager/instances/main.cfg
+COPY run.sh /home/steam/run.sh
+COPY log.sh /home/steam/log.sh
 
 ENV am_ark_SessionName=Ark\ Server \
     am_serverMap=TheIsland \
