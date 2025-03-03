@@ -163,7 +163,7 @@ if [ "$RESTORE_ONSTART" = "true" ]; then
 	echo "Restoring up on start..."
 	arkmanager restore
 else
-	echo "Backup on start is not enabled."
+	echo "Restore on start is not enabled."
 fi
 
 function stop {
